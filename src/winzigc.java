@@ -1,13 +1,12 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class winzigc {
 
     public static void main(String[] args) {
         Lexer lexer;
-        Parser parser;
+//        Parser parser;
 
         String flag = "";
         try {
@@ -19,28 +18,24 @@ public class winzigc {
             case "-lot":
                 try {
                     String program = readFile(args[1]);
-                    lexer = new Lexer();
-                    ArrayList<String> lot = lexer.getListOfTokens(program);
-                    for (String token : lot) {
-                        System.out.println(token);
+                    lexer = new Lexer(program);
+                    Token token = lexer.getNextToken();
+                    while (token.tokenName != TokenName.EOP && token.tokenName != TokenName.UNKNOWN) {
+                        System.out.println(token.tokenName.toString() + ": " + token.value);
+                        token = lexer.getNextToken();
                     }
-                } catch (IOException e) {
+                } catch (IOException | ArrayIndexOutOfBoundsException e) {
                     e.printStackTrace();
                 }
                 break;
             case "-ast":
-                try {
-                    String program = readFile(args[1]);
-                    lexer = new Lexer();
-                    ArrayList<String> lot = lexer.getListOfTokens(program);
-                    parser = new Parser();
-                    ArrayList<String> ast = parser.getAbstractSyntaxTree(lot);
-                    for (String node : ast) {
-                        System.out.println(node);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    String program = readFile(args[1]);
+//                    lexer = new Lexer(program);
+//                    parser = new Parser();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
                 break;
             case "-help":
                 System.out.println("called -help");
@@ -51,8 +46,7 @@ public class winzigc {
     }
 
     private static String readFile(String path) throws IOException {
-        FileReader fileReader = new FileReader(path);
-        BufferedReader bufferedReader = new BufferedReader(fileReader);
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(path));
         StringBuilder stringBuilder = new StringBuilder();
         int val;
         while ((val = bufferedReader.read()) != -1) {
