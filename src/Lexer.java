@@ -170,7 +170,7 @@ public class Lexer {
         String newline = this.sourceCode.substring(lexemeBegin, lexemeCurrent + 1);
         if (newline.equals("\n")) {
             lexemeCurrent++;
-            return new Token(TokenName.NEWLINE, newline);
+            return new Token(TokenName.NEWLINE, "");
         }
 
         return new Token(TokenName.UNKNOWN, null);
@@ -258,7 +258,7 @@ public class Lexer {
             while (this.whitespaces.contains(this.getCurrentChar())) {
                 lexemeCurrent++;
             }
-            return this.sourceCode.substring(lexemeBegin + 1, lexemeCurrent);
+            return "";
         }
         return null;
     }

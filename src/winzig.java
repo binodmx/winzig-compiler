@@ -2,7 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class winzigc {
+public class winzig {
 
     public static void main(String[] args) {
         Lexer lexer;
