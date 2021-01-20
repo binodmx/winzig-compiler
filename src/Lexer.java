@@ -18,6 +18,18 @@ public class Lexer {
     }
 
     public Token getNextToken() {
+        return this.getNextScreenedToken();
+    }
+
+    private Token getNextScreenedToken() {
+        Token token = this.getNextScannedToken();
+        while (Arrays.asList(TokenName.COMMENT, TokenName.WHITESPACE, TokenName.NEWLINE).contains(token.tokenName)) {
+            token = this.getNextScannedToken();
+        }
+        return token;
+    }
+
+    private Token getNextScannedToken() {
         if (lexemeCurrent >= this.sourceCode.length()) {
             return new Token(TokenName.EOP, null);
         }
