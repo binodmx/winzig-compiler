@@ -17,6 +17,14 @@ public class Lexer {
         this.sourceCode = sourceCode;
     }
 
+    public void printListOfTokens() {
+        Token token = this.getNextToken();
+        while (token.tokenName != TokenName.EOP && token.tokenName != TokenName.UNKNOWN) {
+            System.out.println(token.tokenName.toString() + ": " + token.value);
+            token = this.getNextToken();
+        }
+    }
+
     public Token getNextToken() {
         return this.getNextScreenedToken();
     }

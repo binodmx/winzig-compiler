@@ -11,6 +11,10 @@ public class Parser {
         this.stack = new Stack<>();
     }
 
+    public void printAbstractSyntaxTree() {
+        this.getAbstractSyntaxTree().print();
+    }
+
     public AbstractSyntaxTree getAbstractSyntaxTree() {
         nextToken = this.lexer.getNextToken();
         Winzig();

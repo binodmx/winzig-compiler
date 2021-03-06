@@ -7,6 +7,7 @@ public class winzigc {
         String program;
         Lexer lexer;
         Parser parser;
+        CodeGenerator codeGenerator;
         String flag = "";
         try {
             flag = args[0];
@@ -19,11 +20,7 @@ public class winzigc {
                 try {
                     program = readFile(args[1]);
                     lexer = new Lexer(program);
-                    Token token = lexer.getNextToken();
-                    while (token.tokenName != TokenName.EOP && token.tokenName != TokenName.UNKNOWN) {
-                        System.out.println(token.tokenName.toString() + ": " + token.value);
-                        token = lexer.getNextToken();
-                    }
+                    lexer.printListOfTokens();
                 } catch (IOException e) {
                     System.out.println("Invalid file.");
                 } catch (ArrayIndexOutOfBoundsException e) {
@@ -35,8 +32,20 @@ public class winzigc {
                     program = readFile(args[1]);
                     lexer = new Lexer(program);
                     parser = new Parser(lexer);
-                    AbstractSyntaxTree ast = parser.getAbstractSyntaxTree();
-                    ast.print();
+                    parser.printAbstractSyntaxTree();
+                } catch (IOException e) {
+                    System.out.println("Invalid file.");
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    System.out.println("Invalid file name. Run with flag -help for help.");
+                }
+                break;
+            case "-code":
+                try {
+                    program = readFile(args[1]);
+                    lexer = new Lexer(program);
+                    parser = new Parser(lexer);
+                    codeGenerator = new CodeGenerator(parser);
+                    codeGenerator.printCode();
                 } catch (IOException e) {
                     System.out.println("Invalid file.");
                 } catch (ArrayIndexOutOfBoundsException e) {
