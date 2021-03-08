@@ -1,4 +1,4 @@
-program test:
+program copy:
 
 var i, m : integer;
 
@@ -6,6 +6,8 @@ begin
     i := 1;
     while not (i=11) do
     begin
+        read(m);
+        output(m);
         i := i + 1;
     end
-end test.
+end copy.

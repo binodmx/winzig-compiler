@@ -56,7 +56,8 @@ public class winzigc {
                 System.out.println("Usage: java winzigc [stage] [path]\n");
                 System.out.println("where stage includes:");
                 System.out.println("    -lot: generate 'List of Tokens'");
-                System.out.println("    -ast: generate 'Abstract Syntax Tree'\n");
+                System.out.println("    -ast: generate 'Abstract Syntax Tree'");
+                System.out.println("    -code: generate 'Assembly Code'\n");
                 System.out.println("path is used to specify relative path to the winzig program.");
                 break;
             default:
@@ -75,7 +76,4 @@ public class winzigc {
         bufferedReader.close();
         return stringBuilder.toString();
     }
-//    public final String ANSI_RED = "\u001B[31m";
-//    public final String ANSI_RESET = "\u001B[0m";
-//    System.out.println(ANSI_RED + "This text is red!" + ANSI_RESET);
 }

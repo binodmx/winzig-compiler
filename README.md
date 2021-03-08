@@ -12,3 +12,11 @@
 | 3 | Build the compiler | `make` |
 | 4 | Run the compiler | `java winzigc [stage] [path]` |
 | 5 | For help | `java winzigc -help` |
+
+### Stages
+
+| Stage | Definition |
+| --- | --- |
+| -lot | output list of tokens
+| -ast | output abstract syntax tree |
+| -code | output assembly code |
