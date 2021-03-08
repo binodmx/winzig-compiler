@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class CodeGenerator {
@@ -53,7 +54,7 @@ public class CodeGenerator {
 
     private void traverse(Node node) {
         String x, y;
-        Node e1, e2, e3, e4, e5, e6, e7;
+        Node e, e1, e2, e3, e4, e5, e6, e7;
         switch (node.getData()) {
             case "program":
                 e1 = node.getLeftChild();
@@ -85,6 +86,18 @@ public class CodeGenerator {
                 traverse(e6);
                 node.setCodeR(close(gen(e6.getCodeR(), "stop")));
                 break;
+            case "const":
+            case "type":
+                e1 = node.getLeftChild();
+                e2 = e1.getRightChild();
+                e2.setCodeL(node.getCodeL());
+                e2.setNextL(node.getNextL());
+                e2.setTopL(node.getTopL());
+                traverse(e2);
+                node.setCodeR(e2.getCodeR());
+                node.setNextR(e2.getNextR());
+                node.setTopR(e2.getTopR());
+                break;
             case "<integer>":
             case "<char>":
             case "<string>":
@@ -96,6 +109,23 @@ public class CodeGenerator {
                 node.setCodeR(node.getCodeL());
                 node.setNextR(node.getNextL());
                 node.setTopR(node.getTopL());
+                break;
+            case "output":
+                e = node.getLeftChild();
+                e.setCodeL(node.getCodeL());
+                e.setNextL(node.getNextL());
+                e.setTopL(node.getTopL());
+                traverse(e);
+                for (int i = 1; i < node.getN(); i++) {
+                    e.getRightChild().setCodeL(gen(e.getCodeR(), "print"));
+                    e.getRightChild().setNextL(e.getNextL() + 1);
+                    e.getRightChild().setTopL(e.getTopL() - 1);
+                    traverse(e.getRightChild());
+                    e = e.getRightChild();
+                }
+                node.setCodeR(gen(e.getCodeR(), "print"));
+                node.setNextR(e.getNextR() + 1);
+                node.setTopR(e.getTopR() - 1);
                 break;
             case "if":
                 switch (node.getN()) {
@@ -151,6 +181,33 @@ public class CodeGenerator {
                 node.setNextR(e2.getNextR() + 1);
                 node.setTopR(e2.getTopR());
                 break;
+            case "repeat":
+                e = node.getLeftChild();
+                e.setCodeL(node.getCodeL());
+                e.setNextL(node.getNextL());
+                e.setTopL(node.getTopL());
+                traverse(e);
+                for (int i = 1; i < node.getN(); i++) {
+                    e.getRightChild().setCodeL(e.getCodeR());
+                    e.getRightChild().setNextL(e.getNextL());
+                    e.getRightChild().setTopL(e.getTopL());
+                    traverse(e.getRightChild());
+                    e = e.getRightChild();
+                }
+                node.setCodeR(gen(e.getCodeR(), "iffalse", Integer.toString(node.getNextL())));
+                node.setNextR(e.getNextR() + 1);
+                node.setTopR(e.getTopR() - 1);
+                break;
+            case "read":
+                e = node.getLeftChild();
+                String tempCode = node.getCodeL();
+                for (int i = 0; i < node.getN(); i++) {
+                    tempCode = gen(tempCode, "read", "save", Integer.toString(lookup(e.getLeftChild().getData())));
+                    e = e.getRightChild();
+                }
+                node.setCodeR(tempCode);
+                node.setNextR(node.getNextL() + 2 * node.getN());
+                node.setTopR(node.getTopL());
             case "assign":
                 e1 = node.getLeftChild();
                 e2 = e1.getRightChild();
