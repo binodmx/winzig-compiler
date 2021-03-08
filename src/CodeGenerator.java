@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class CodeGenerator {
@@ -6,6 +5,7 @@ public class CodeGenerator {
     private HashMap<String, Integer> declarationTable;
     private AbstractSyntaxTree ast;
     String code;
+    int lineNo;
 
     public CodeGenerator(Parser parser) {
         this.parser = parser;
@@ -24,7 +24,7 @@ public class CodeGenerator {
 
     public void printCode() {
         generateCode();
-        System.out.println(code);
+        System.out.println(code.strip());
     }
 
     private void enter(String name, int n) {
@@ -36,7 +36,7 @@ public class CodeGenerator {
     }
 
     private String gen(String file, String... args) {
-        String newLine = "";
+        String newLine = lineNo++ + ": ";
         for (String arg : args) {
             newLine = newLine + arg + " ";
         }
@@ -44,6 +44,7 @@ public class CodeGenerator {
     }
 
     private String open() {
+        lineNo = 1;
         return "";
     }
 
@@ -201,13 +202,21 @@ public class CodeGenerator {
             case "read":
                 e = node.getLeftChild();
                 String tempCode = node.getCodeL();
+                int tempTop = node.getTopL();
                 for (int i = 0; i < node.getN(); i++) {
-                    tempCode = gen(tempCode, "read", "save", Integer.toString(lookup(e.getLeftChild().getData())));
+                    x = e.getLeftChild().getData();
+                    if (lookup(x) == 0) {
+                        enter(x, ++tempTop);
+                        tempCode = gen(tempCode, "read");
+                    } else {
+                        tempCode = gen(gen(tempCode, "read"), "save", Integer.toString(lookup(x)));
+                    }
                     e = e.getRightChild();
                 }
                 node.setCodeR(tempCode);
                 node.setNextR(node.getNextL() + 2 * node.getN());
-                node.setTopR(node.getTopL());
+                node.setTopR(tempTop);
+                break;
             case "assign":
                 e1 = node.getLeftChild();
                 e2 = e1.getRightChild();
